@@ -27,7 +27,7 @@ def find_first_regular():
 def find_first_random():
     global IS_RANDOM
     IS_RANDOM = True
-    for i in range(20):
+    for i in range(5):
         parse_single_page(start_url_random)
         if i % 10 == 0:
             time.sleep(2)
