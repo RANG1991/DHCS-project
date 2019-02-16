@@ -61,7 +61,7 @@ def parse_stats(url):
     csv_file = csv.writer(f, delimiter=',', quotechar='\"')
     response = requests.get(url, headers=headers)
     tree = html.fromstring(response.content)
-    header = tree.xpath("//header[@class=\"panel-heading\"]//a[starts-with(@href, 'https://he.wikipedia.org')]/text()")
+    header = tree.xpath("//header[@class=\"panel-heading\"]//a[starts-with(@href, '\"https://he.wikipedia.org')]/text()")
     csv_file.writerow(header)
     all_table_rows_selector = tree.xpath("//tr")
     for row_selector in all_table_rows_selector:
@@ -91,7 +91,7 @@ def parse_stats_english_page(url):
     csv_file = csv.writer(f, delimiter=',', quotechar='\"')
     response = requests.get(url, headers=headers)
     tree = html.fromstring(response.content)
-    header = tree.xpath("//header[@class=\"panel-heading\"]//a[starts-with(@href, 'https://en.wikipedia.org')]/text()")
+    header = tree.xpath("//header[@class=\"panel-heading\"]//a[starts-with(@href, '\"https://en.wikipedia.org')]/text()")
     csv_file.writerow(header)
     all_table_rows_selector = tree.xpath("//tr")
     for row_selector in all_table_rows_selector:
@@ -114,3 +114,4 @@ def parser_multiple_links_from_file(file_name, is_random = False):
 
 # parser_multiple_links_from_file(r"C:\Users\Admin\Desktop\out_articales_porn.txt", is_random=False)
 # find_first_random()
+find_first_regular()
