@@ -40,21 +40,24 @@ def find_first_random():
             time.sleep(2)
 
 def parse_single_page(url):
-    print("now I'm parsing :" + str(url))
-    response = requests.get(url)
-    tree = html.fromstring(response.content)
-    link = tree.xpath("//a[contains(.,\"גרסאות קודמות\")]/@href")[0]
-    link = urljoin(base, link)
-    l = tree.xpath("//li[starts-with(@class, \"interlanguage-link interwiki-en\")]/a/@href")
-    if len(l) == 0:
-        print("can't parse this url: " + str(unquote(url)[url.index("wiki/") + 5:]))
-        return
-    global IS_INCREMENTED
-    IS_INCREMENTED += 1
-    english_page = l[0]
-    english_page = urljoin(base_en, english_page)
-    parse_history_versions(link)
-    parse_single_page_english(english_page)
+    try:
+        print("now I'm parsing :" + str(url))
+        response = requests.get(url)
+        tree = html.fromstring(response.content)
+        link = tree.xpath("//a[contains(.,\"גרסאות קודמות\")]/@href")[0]
+        link = urljoin(base, link)
+        l = tree.xpath("//li[starts-with(@class, \"interlanguage-link interwiki-en\")]/a/@href")
+        if len(l) == 0:
+            print("can't parse this url: " + str(unquote(url)[url.index("wiki/") + 5:]))
+            return
+        global IS_INCREMENTED
+        IS_INCREMENTED += 1
+        english_page = l[0]
+        english_page = urljoin(base_en, english_page)
+        parse_history_versions(link)
+        parse_single_page_english(english_page)
+    except Exception as e:
+        pass
 
 def parse_history_versions(url):
     response = requests.get(url)
