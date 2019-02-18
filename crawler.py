@@ -12,24 +12,31 @@ base_and_wiki = "https://he.wikipedia.org/wiki/"
 start_url = "https://he.wikipedia.org/wiki/פורטל:ישראל"
 start_url_random = "https://he.wikipedia.org/wiki/Special:Random"
 IS_RANDOM = False
+IS_INCREMENTED = 0
 
 def find_first_regular():
     response = requests.get(start_url)
     tree = html.fromstring(response.content)
     links = tree.xpath("//div[@class=\"plainlinks\" and contains(., \"ערכים מומלצים\")]/following-sibling::*[1]//a/@href")
-    for i in range(1, 6):
+    i = 1
+    global IS_INCREMENTED
+    IS_INCREMENTED = 0
+    while IS_INCREMENTED < 5:
         # print(unquote(links[i]).replace("/wiki/", ""))
         next_page = urljoin(base, links[i])
         parse_single_page(next_page)
+        i += 1
         if i % 10 == 0:
             time.sleep(2)
 
 def find_first_random():
     global IS_RANDOM
     IS_RANDOM = True
-    for i in range(5):
+    global IS_INCREMENTED
+    IS_INCREMENTED = 0
+    while IS_INCREMENTED < 5:
         parse_single_page(start_url_random)
-        if i % 10 == 0:
+        if IS_INCREMENTED % 10 == 0:
             time.sleep(2)
 
 def parse_single_page(url):
@@ -42,6 +49,8 @@ def parse_single_page(url):
     if len(l) == 0:
         print("can't parse this url: " + str(unquote(url)[url.index("wiki/") + 5:]))
         return
+    global IS_INCREMENTED
+    IS_INCREMENTED += 1
     english_page = l[0]
     english_page = urljoin(base_en, english_page)
     parse_history_versions(link)
@@ -61,7 +70,7 @@ def parse_stats(url):
     csv_file = csv.writer(f, delimiter=',', quotechar='\"')
     response = requests.get(url, headers=headers)
     tree = html.fromstring(response.content)
-    header = tree.xpath("//header[@class=\"panel-heading\"]//a[starts-with(@href, '\"https://he.wikipedia.org')]/text()")
+    header = tree.xpath("//header[@class=\"panel-heading\"]//a[starts-with(@href, 'https://he.wikipedia.org')]/text()")
     csv_file.writerow(header)
     all_table_rows_selector = tree.xpath("//tr")
     for row_selector in all_table_rows_selector:
@@ -91,7 +100,7 @@ def parse_stats_english_page(url):
     csv_file = csv.writer(f, delimiter=',', quotechar='\"')
     response = requests.get(url, headers=headers)
     tree = html.fromstring(response.content)
-    header = tree.xpath("//header[@class=\"panel-heading\"]//a[starts-with(@href, '\"https://en.wikipedia.org')]/text()")
+    header = tree.xpath("//header[@class=\"panel-heading\"]//a[starts-with(@href, 'https://en.wikipedia.org')]/text()")
     csv_file.writerow(header)
     all_table_rows_selector = tree.xpath("//tr")
     for row_selector in all_table_rows_selector:
@@ -114,4 +123,4 @@ def parser_multiple_links_from_file(file_name, is_random = False):
 
 # parser_multiple_links_from_file(r"C:\Users\Admin\Desktop\out_articales_porn.txt", is_random=False)
 # find_first_random()
-find_first_regular()
+# find_first_regular()

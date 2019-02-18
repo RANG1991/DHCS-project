@@ -3,6 +3,7 @@ from tkinter import Text, END, Radiobutton, W
 from PIL import Image, ImageTk
 from extract_values_from_CSV import read_csvs_english_hebrew
 import crawler
+import math
 
 radio_button = 1
 isr_ratio = 1
@@ -371,7 +372,10 @@ def calc(event):
         crawler.find_first_random()
         isr_ratio = read_csvs_english_hebrew("wiki.csv", "wiki_en.csv", generate_dict_criteria())
         oth_ratio = read_csvs_english_hebrew("wiki_random.csv", "wiki_en_random.csv", generate_dict_criteria())
-        ratio = isr_ratio / oth_ratio
+        if oth_ratio == 0:
+            ratio = math.inf
+        else:
+            ratio = isr_ratio / oth_ratio
     else:
         isr_path = israel_related.get("1.0", END)
         oth_path = other_values.get("1.0", END)
